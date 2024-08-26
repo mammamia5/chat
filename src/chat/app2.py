@@ -6,14 +6,14 @@ from kafka import KafkaProducer, KafkaConsumer
 from json import dumps, loads
 from datetime import datetime
 import threading
-
+from textual.widgets import Header, Footer, Input
 class ChatApp(App):
     def __init__(self):
         super().__init__()
         self.user_name = None  # 사용자 이름을 저장할 속성
         self.producer = KafkaProducer(
             # ip는 이따가 서버 열리면 바꾸기
-            bootstrap_servers=['172.17.0.1:9092'],
+            bootstrap_servers=['ec2-43-203-210-250.ap-northeast-2.compute.amazonaws.com:9092'],
             value_serializer=lambda x: dumps(x).encode('utf-8')
         )
         self.consumer_thread = threading.Thread(target=self.consume_messages, daemon=True)
@@ -56,7 +56,7 @@ class ChatApp(App):
             'message': message,
             'time': datetime.today().strftime("%H:%M")
         }
-        self.producer.send('input', value=data)
+        self.producer.send('mammamia', value=data)
         self.producer.flush()
 
         # 메시지를 로그에 추가
@@ -70,11 +70,11 @@ class ChatApp(App):
 
     def consume_messages(self):  # consumer
         consumer = KafkaConsumer(
-            'input',
-            bootstrap_servers=["172.17.0.1:9092"],
+            'mammamia',
+            bootstrap_servers=["ec2-43-203-210-250.ap-northeast-2.compute.amazonaws.com:9092"],
             auto_offset_reset="earliest",
-            enable_auto_commit=True,
-            group_id='chat_group',
+            #enable_auto_commit=True,
+            #group_id='chat_group',
             value_deserializer=lambda x: loads(x.decode('utf-8'))
         )
         try:
