@@ -12,6 +12,7 @@ class ChatApp(App):
         super().__init__()
         self.user_name = None  # 사용자 이름을 저장할 속성
         self.producer = KafkaProducer(
+            # ip는 이따가 서버 열리면 바꾸기
             bootstrap_servers=['172.17.0.1:9092'],
             value_serializer=lambda x: dumps(x).encode('utf-8')
         )
