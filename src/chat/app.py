@@ -6,16 +6,18 @@ from kafka import KafkaProducer, KafkaConsumer
 from json import dumps, loads
 from datetime import datetime
 import threading
+import pandas as pd
 
 class ChatApp(App):
     def __init__(self):
         super().__init__()
         self.producer = KafkaProducer(
-            bootstrap_servers=['172.17.0.1:9092'],
+            bootstrap_servers=['ec2-43-203-210-250.ap-northeast-2.compute.amazonaws.com:9092'],
             value_serializer=lambda x: dumps(x).encode('utf-8')
         )
         self.consumer_thread = threading.Thread(target=self.consume_messages, daemon=True)
         self.consumer_thread.start()
+        self.result = [] # 여기 추가
     ############ UI 구성하는곳 #############
     def compose(self) -> ComposeResult:
         # TODO : 시작할때 본인 이름을 치는걸 구현하고 싶어요
@@ -33,17 +35,21 @@ class ChatApp(App):
         message = event.value
         # exit 입력시 종료
         if message.lower() == 'exit':
+            # 여기 추가 두 줄
+            df = pd.DataFrame(self.result)
+            df.to_csv('~/data/team_chat.csv', index = False)
             self.exit()
         data = {
             'sender': '김원준',  # 사용자 이름을 입력하고 시작하는 식으로 고칠까
             'message': message,
             'time': datetime.today().strftime("%H:%M")
         }
-        self.producer.send('input', value=data)
+        self.producer.send('mammamia3', value=data)
         self.producer.flush()
         
         # 메시지를 로그에 추가
         # 여기에서 producer 출력
+#        text_prod = f"{data['sender']}: {message} (보낸 시간: {data['time']})"
         text_prod = Text(f"{data['sender']}: {message} (보낸 시간: {data['time']})",
                 style="bold green") # 입력 들어오는거 꾸미기
         #log_widget.write(f"{data['sender']}: {message} (보낸 시간: {data['time']})")
@@ -54,16 +60,18 @@ class ChatApp(App):
 
     def consume_messages(self): # consumer
         consumer = KafkaConsumer(
-            'input',
-            bootstrap_servers=["172.17.0.1:9092"],
+            'mammamia3',
+            bootstrap_servers=["ec2-43-203-210-250.ap-northeast-2.compute.amazonaws.com:9092"],
             auto_offset_reset="earliest",
-            enable_auto_commit=True,
-            group_id='chat_group',
+#            enable_auto_commit=True,
+#            group_id='chat_group',
             value_deserializer=lambda x: loads(x.decode('utf-8'))
         )
         try:
             for msg in consumer:
                 data = msg.value
+                # 여기 추가
+                self.result.append(data)
                 sender = data['sender']
                 message = data['message']
                 received_time = data['time']
@@ -78,7 +86,8 @@ class ChatApp(App):
         log_widget = self.query_one(RichLog)
         # 여기에서 consumer 값 출력
         text_con = Text(f"{sender} : {message} (받은 시간 : {received_time})",
-                style="bold blue", justify="right") # 받는 채팅은 우측으로
+                style="bold blue", justify="right")
+#        text_con = f"{sender} : {message} (받은 시간 : {received_time})"
         #log_widget.write(f"{sender} : {message} (받은 시간 : {received_time})")
         log_widget.write(text_con)
 

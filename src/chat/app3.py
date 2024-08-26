@@ -7,21 +7,21 @@ from json import dumps, loads
 from datetime import datetime
 import threading
 import pandas as pd
+import queue
 
 class ChatApp(App):
     def __init__(self):
         super().__init__()
         self.user_name = None  # 사용자 이름을 저장할 속성
         self.producer = KafkaProducer(
-            # ip는 이따가 서버 열리면 바꾸기
             bootstrap_servers=['ec2-43-203-210-250.ap-northeast-2.compute.amazonaws.com:9092'],
-            #bootstrap_servers=['172.17.0.1:9092'],
             value_serializer=lambda x: dumps(x).encode('utf-8')
         )
+        self.message_queue = queue.Queue()  # 메시지 큐를 사용하여 메인 스레드에서 UI 업데이트
         self.consumer_thread = threading.Thread(target=self.consume_messages, daemon=True)
         self.consumer_thread.start()
 
-    ############ 시작 UI 구성하는곳 #############
+    ############ UI 구성하는곳 #############
     def compose(self) -> ComposeResult:
         # 사용자 이름 입력을 위한 초기 화면
         yield Static("사용자 이름을 입력하세요:", id="user_name_prompt")
@@ -34,7 +34,7 @@ class ChatApp(App):
         self.user_name = event.value.strip()  # 사용자 이름을 저장
         self.query_one("#user_name_prompt").remove()  # 이름 입력 위젯 제거
         self.query_one("#user_name_input").remove()
-        
+
         # 채팅 입력 화면 설정
         self.compose_chat_screen()
 
@@ -62,7 +62,6 @@ class ChatApp(App):
         self.producer.flush()
 
         # 메시지를 로그에 추가
-        # 여기에서 producer 출력
         text_prod = Text(f"{data['sender']}: {message} (보낸 시간: {data['time']})",
                 style="bold green")  # 입력 들어오는거 꾸미기
         log_widget.write(text_prod)
@@ -74,36 +73,33 @@ class ChatApp(App):
         consumer = KafkaConsumer(
             'mammamia',
             bootstrap_servers=["ec2-43-203-210-250.ap-northeast-2.compute.amazonaws.com:9092"],
-            #bootstrap_servers=["172.17.0.1:9092"],
             auto_offset_reset="earliest",
-#            enable_auto_commit=True,
-#            group_id='chat_group',
+            enable_auto_commit=True,
+            group_id='chat_group',
             value_deserializer=lambda x: loads(x.decode('utf-8'))
         )
         try:
-            log_widget = self.query_one("#chat_log", RichLog)
             for msg in consumer:
                 data = msg.value
-                sender = data['sender']
-                message = data['message']
-                received_time = data['time']
-                # 여기에서 consumer 값 출력
-#                text_con = Text(f"{sender} : {message} (받은 시간 : {received_time})",
-#                        style="bold blue", justify="right")  # 받는 채팅은 우측으로
-#                log_widget.write(text_con)
-                #if sender != self.user_name:  # 내가 보낸건 보고싶지 않아요
-                self.post_message_to_log(sender, message, received_time)
+                self.message_queue.put(data)  # 메시지를 큐에 추가
+                self.call_from_thread(self.process_message)  # 메인 스레드에서 메시지 처리
         except KeyboardInterrupt:
             print("채팅 종료")
         finally:
             consumer.close()
 
-    def post_message_to_log(self, sender, message, received_time):
+    def process_message(self):
+        """메시지 큐에서 메시지를 읽어 UI를 업데이트합니다."""
         log_widget = self.query_one("#chat_log", RichLog)
-        # 여기에서 consumer 값 출력
-        text_con = Text(f"{sender} : {message} (받은 시간 : {received_time})",
-                style="bold blue", justify="right")  # 받는 채팅은 우측으로
-        log_widget.write(text_con)
+        while not self.message_queue.empty():
+            data = self.message_queue.get()
+            sender = data['sender']
+            message = data['message']
+            received_time = data['time']
+            if sender != self.user_name:  # 내가 보낸건 보고싶지 않아요
+                text_con = Text(f"{sender} : {message} (받은 시간 : {received_time})",
+                        style="bold blue", justify="right")  # 받는 채팅은 우측으로
+                log_widget.write(text_con)
 
 if __name__ == "__main__":
     app = ChatApp()
