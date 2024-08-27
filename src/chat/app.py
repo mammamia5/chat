@@ -23,7 +23,7 @@ class Mammamia(App):
         yield Header()
         yield RichLog()
         yield Input(placeholder="메시지를 입력하세요...") # 채팅창 입력칸
-
+        
     def on_mount(self) -> None:
         self.title = "KAFKA CHATTING PROGRAM"
         self.sub_title = "TEAM mammamia"
@@ -38,8 +38,8 @@ class Mammamia(App):
         message = event.value
         # exit 입력시 종료
         if message.lower() == 'exit':
-            self.exit()
             self.send_exit_message()
+            self.exit()
         data = {
             'sender': '정미은',  # 사용자 이름을 입력하고 시작하는 식으로 고칠까
             'message': message,
