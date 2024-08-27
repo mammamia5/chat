@@ -41,6 +41,7 @@ class Mammamia(App):
         if message.lower() == 'exit':
             self.send_exit_message()
             self.exit()
+            return #return으로 함수를 끝내야 exit이 중복으로 나오지 않음
         data = {
             'sender': '정미은',  # 사용자 이름을 입력하고 시작하는 식으로 고칠까
             'message': message,
@@ -63,7 +64,7 @@ class Mammamia(App):
         log_widget = self.query_one(RichLog)
         exit_message = {
         'sender': '정미은',
-        'message': f"정미은님이 채팅방을 퇴장했습니다.",
+        'message': f"채팅방을 퇴장했습니다.",
         'time': datetime.today().strftime("%Y-%m-%d %H:%M:%S")}
 
     # producer가 퇴장 메시지를 보냄
