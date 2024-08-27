@@ -41,8 +41,9 @@ class Mammamia(App):
         if message.lower() == 'exit':
             self.send_exit_message()
             self.exit()
+            return
         data = {
-            'sender': '정미은',  # 사용자 이름을 입력하고 시작하는 식으로 고칠까
+            'sender': '박민주',  # 사용자 이름을 입력하고 시작하는 식으로 고칠까
             'message': message,
             'time': datetime.today().strftime("%Y-%m-%d %H:%M:%S")
         }
@@ -62,8 +63,8 @@ class Mammamia(App):
     def send_exit_message(self):
         log_widget = self.query_one(RichLog)
         exit_message = {
-        'sender': '정미은',
-        'message': f"정미은님이 채팅방을 퇴장했습니다.",
+        'sender': '박민주',
+        'message': f"박민주님이 채팅방을 퇴장했습니다.",
         'time': datetime.today().strftime("%Y-%m-%d %H:%M:%S")}
 
     # producer가 퇴장 메시지를 보냄
@@ -90,7 +91,7 @@ class Mammamia(App):
                 sender = data['sender']
                 message = data['message']
                 received_time = data['time']
-                if sender != '정미은': # 내가 보낸건 보고싶지않아요
+                if sender != '박민주': # 내가 보낸건 보고싶지않아요
                     self.post_message_to_log(sender, message, received_time)
         except KeyboardInterrupt:
             print("채팅 종료")
