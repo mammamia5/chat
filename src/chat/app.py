@@ -42,11 +42,11 @@ class Mammamia(App):
             self.send_exit_message()
             self.exit()
         data = {
-            'sender': '정미은',  # 사용자 이름을 입력하고 시작하는 식으로 고칠까
+            'sender': '김원준',  # 사용자 이름을 입력하고 시작하는 식으로 고칠까
             'message': message,
             'time': datetime.today().strftime("%Y-%m-%d %H:%M:%S")
         }
-        self.producer.send('mammamia3', value=data)
+        self.producer.send('mammamia7', value=data)
         self.producer.flush()
         
         # 메시지를 로그에 추가
@@ -62,12 +62,12 @@ class Mammamia(App):
     def send_exit_message(self):
         log_widget = self.query_one(RichLog)
         exit_message = {
-        'sender': '정미은',
-        'message': f"정미은님이 채팅방을 퇴장했습니다.",
+        'sender': '김원준',
+        'message': f"김원준님이 채팅방을 퇴장했습니다.",
         'time': datetime.today().strftime("%Y-%m-%d %H:%M:%S")}
 
     # producer가 퇴장 메시지를 보냄
-        self.producer.send('mammamia3', value=exit_message)
+        self.producer.send('mammamia7', value=exit_message)
         self.producer.flush()
 
     # 퇴장 메시지를 로그에 추가
@@ -77,7 +77,7 @@ class Mammamia(App):
 
     def consume_messages(self): # consumer
         consumer = KafkaConsumer(
-            'mammamia3',
+            'mammamia7',
             bootstrap_servers=["ec2-43-203-210-250.ap-northeast-2.compute.amazonaws.com:9092"],
             auto_offset_reset="earliest",
             #enable_auto_commit=True,
@@ -90,7 +90,7 @@ class Mammamia(App):
                 sender = data['sender']
                 message = data['message']
                 received_time = data['time']
-                if sender != '정미은': # 내가 보낸건 보고싶지않아요
+                if sender != '김원준': # 내가 보낸건 보고싶지않아요
                     self.post_message_to_log(sender, message, received_time)
         except KeyboardInterrupt:
             print("채팅 종료")
