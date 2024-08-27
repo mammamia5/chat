@@ -1,4 +1,9 @@
-# chat v0.1.0
+# chat v0.2.0 만들기~
+## TODO
+통계 아이디어 구현하기
+특정 시간대 메시지 알람 구현하기
+### wanted
+앱 시작시 본인 이름 기입하기 
 ## USAGE
 **Broker : AWS EC2 Server**
 ```bash
