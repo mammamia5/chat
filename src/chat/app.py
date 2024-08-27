@@ -75,8 +75,8 @@ class ChatApp(App):
                 sender = data['sender']
                 message = data['message']
                 received_time = data['time']
-                if sender != '김원준': # 내가 보낸건 보고싶지않아요
-                    self.post_message_to_log(sender, message, received_time)
+                #if sender != '김원준': # 내가 보낸건 보고싶지않아요
+                self.post_message_to_log(sender, message, received_time)
         except KeyboardInterrupt:
             print("채팅 종료")
         finally:
@@ -89,6 +89,13 @@ class ChatApp(App):
                 style="bold blue", justify="right")
 #        text_con = f"{sender} : {message} (받은 시간 : {received_time})"
         #log_widget.write(f"{sender} : {message} (받은 시간 : {received_time})")
+        if message[:3] == '@검색':
+            from chat.search_word import search_word
+            word = message.split()[-1]
+            search_result = search_word(word)
+            #search_word(word[-1])
+            log_widget.write(search_result)
+            return
         log_widget.write(text_con)
 
 if __name__ == "__main__":
