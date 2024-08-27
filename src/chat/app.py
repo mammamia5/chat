@@ -72,7 +72,7 @@ class Mammamia(App):
         self.producer.flush()
 
     # 퇴장 메시지를 로그에 추가
-        exit_text = Text(f"{exit_message['sender']}님이 채팅방을 퇴장했습니다. (보>낸 시간: {exit_message['time']})",
+        exit_text = Text(f"{exit_message['sender']}님이 exit_message['message'] (보>낸 시간: {exit_message['time']})",
                      style="bold red")
         log_widget.write(exit_text)
 
