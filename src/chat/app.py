@@ -47,7 +47,7 @@ class Mammamia(App):
             'message': message,
             'time': datetime.today().strftime("%Y-%m-%d %H:%M:%S")
         }
-        self.producer.send('mammamia7', value=data)
+        self.producer.send('mammamia9', value=data)
         self.producer.flush()
         
         # 메시지를 로그에 추가
@@ -68,7 +68,7 @@ class Mammamia(App):
         'time': datetime.today().strftime("%Y-%m-%d %H:%M:%S")}
 
     # producer가 퇴장 메시지를 보냄
-        self.producer.send('mammamia7', value=exit_message)
+        self.producer.send('mammamia9', value=exit_message)
         self.producer.flush()
 
     # 퇴장 메시지를 로그에 추가
@@ -78,7 +78,7 @@ class Mammamia(App):
 
     def consume_messages(self): # consumer
         consumer = KafkaConsumer(
-            'mammamia7',
+            'mammamia9',
             bootstrap_servers=["ec2-43-203-210-250.ap-northeast-2.compute.amazonaws.com:9092"],
             auto_offset_reset="earliest",
             #enable_auto_commit=True,
