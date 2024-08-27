@@ -21,15 +21,17 @@ class Mammamia(App):
     def compose(self) -> ComposeResult:
         # TODO : 시작할때 본인 이름을 치는걸 구현하고 싶어요
         yield Header()
-        yield RichLog()
+        #yield RichLog()
+        rich_log = RichLog()
+        rich_log.styles.background = '#312f2e'
+        yield rich_log
         yield Input(placeholder="메시지를 입력하세요...") # 채팅창 입력칸
-        
+
     def on_mount(self) -> None:
         self.title = "KAFKA CHATTING PROGRAM"
         self.sub_title = "TEAM mammamia"
-        self.screen.styles.background = "darkgrey"
+        self.screen.styles.background = "#4f4e4f"
         self.screen.styles.border = ("heavy", "black")
-
         # 채팅방 입장 메시지 자동으로 출력 및 전송
         self.send_entry_message()
 
@@ -74,7 +76,7 @@ class Mammamia(App):
         self.producer.flush()
     
     # 입장 메시지를 로그에 추가
-        entry_text = Text(f"{entry_message['sender']}님이 {entry_message['message']} (보낸 시간: {entry_message['time']})", style="#43df8e", justify="right")
+        entry_text = Text(f"{entry_message['sender']}님이 {entry_message['message']} (보낸 시간: {entry_message['time']})", style="#cb89f4", justify="right")
         log_widget.write(entry_text)
 
     def send_exit_message(self):
@@ -89,7 +91,7 @@ class Mammamia(App):
         self.producer.flush()
 
     # 퇴장 메시지를 로그에 추가
-        exit_text = Text(f"{exit_message['sender']}님이 {exit_message['message']} (보낸 시간: {exit_message['time']})", style="#e76554", justify="right")
+        exit_text = Text(f"{exit_message['sender']}님이 {exit_message['message']} (보낸 시간: {exit_message['time']})", style="#ea98b2", justify="right")
         log_widget.write(exit_text)
         
     def consume_messages(self): # consumer
@@ -117,9 +119,9 @@ class Mammamia(App):
     def post_message_to_log(self, sender, message, received_time):
         log_widget = self.query_one(RichLog)
         if "퇴장했습니다" in message:
-            text_con = Text(f"{sender}님이 {message} (받은 시간 : {received_time})", style="bold red", justify="right")
+            text_con = Text(f"{sender}님이 {message} (받은 시간 : {received_time})", style="#f6fc82", justify="right")
         elif "입장하셨습니다" in message:
-            text_con = Text(f"{sender}님이 {message} (받은 시간 : {received_time})", style="bold green", justify="right")    
+            text_con = Text(f"{sender}님이 {message} (받은 시간 : {received_time})", style="#fcb1a5", justify="right")    
         else:
             text_con = Text(f"{sender} : {message} (받은 시간 : {received_time})", style="bold white", justify="right")
         # 여기에서 consumer 값 출력
