@@ -20,9 +20,13 @@ class Mammamia(App):
     ############ UI 구성하는곳 #############
     def compose(self) -> ComposeResult:
         # TODO : 시작할때 본인 이름을 치는걸 구현하고 싶어요
-        yield Header("Mammamia")
+        yield Header()
         yield RichLog()
         yield Input(placeholder="메시지를 입력하세요...") # 채팅창 입력칸
+
+    def on_mount(self) -> None:
+        self.title = "KAFKA CHATTING PROGRAM"
+        self.sub_title = "TEAM mammamia"
     
     ################ 메세지 관련 ##################
     @on(Input.Submitted) # 채팅 치면 발생하는 event
@@ -39,7 +43,7 @@ class Mammamia(App):
         data = {
             'sender': '정미은',  # 사용자 이름을 입력하고 시작하는 식으로 고칠까
             'message': message,
-            'time': datetime.today().strftime("%H:%M")
+            'time': datetime.today().strftime("%Y-%m-%d %H:%M:%S")
         }
         self.producer.send('mammamia3', value=data)
         self.producer.flush()
@@ -57,9 +61,9 @@ class Mammamia(App):
     def send_exit_message(self):
         log_widget = self.query_one(RichLog)
         exit_message = {
-        'sender': self.user_name,
-        'message': f"{self.user_name}님이 채팅방을 퇴장했습니다.",
-        'time': datetime.today().strftime("%H:%M")}
+        'sender': '정미은',
+        'message': f"정미은님이 채팅방을 퇴장했습니다.",
+        'time': datetime.today().strftime("%Y-%m-%d %H:%M:%S")}
 
     # producer가 퇴장 메시지를 보냄
         self.producer.send('mammamia3', value=exit_message)
@@ -85,8 +89,8 @@ class Mammamia(App):
                 sender = data['sender']
                 message = data['message']
                 received_time = data['time']
-                # if sender != '정미은': # 내가 보낸건 보고싶지않아요
-                #    self.post_message_to_log(sender, message, received_time)
+                if sender != '정미은': # 내가 보낸건 보고싶지않아요
+                    self.post_message_to_log(sender, message, received_time)
         except KeyboardInterrupt:
             print("채팅 종료")
         finally:
