@@ -21,13 +21,16 @@ class Mammamia(App):
     def compose(self) -> ComposeResult:
         # TODO : 시작할때 본인 이름을 치는걸 구현하고 싶어요
         yield Header()
-        yield RichLog()
+        rich_log = RichLog()
+        rich_log.styles.background = '#F5EEDC'
+        yield rich_log
+        #yield RichLog()
         yield Input(placeholder="메시지를 입력하세요...") # 채팅창 입력칸
         
     def on_mount(self) -> None:
         self.title = "KAFKA CHATTING PROGRAM"
         self.sub_title = "TEAM mammamia"
-        self.screen.styles.background = "darkgrey"
+        self.screen.styles.background = "#DD4A48"
         self.screen.styles.border = ("heavy", "black")
 
         # 채팅방 입장 메시지 자동으로 출력 및 전송
@@ -48,7 +51,7 @@ class Mammamia(App):
             return #return으로 함수를 끝내야 exit이 중복으로 나오지 않음
         
         data = {
-            'sender': '정미은',  # 사용자 이름을 입력하고 시작하는 식으로 고칠까
+            'sender': '김예지',  # 사용자 이름을 입력하고 시작하는 식으로 고칠까
             'message': message,
             'time': datetime.today().strftime("%Y-%m-%d %H:%M:%S")}
         self.producer.send('mammamia10', value=data)
@@ -56,7 +59,7 @@ class Mammamia(App):
         
         # 메시지를 로그에 추가
         # 여기에서 producer 출력
-        text_prod = Text(f"{data['sender']}: {message} (보낸 시간: {data['time']})", style="#359dde") # 입력 들어오는거 꾸미기
+        text_prod = Text(f"{data['sender']}: {message} (보낸 시간: {data['time']})", style="#060b41") # 입력 들어오는거 꾸미기
         log_widget.write(text_prod)
         
         # 입력 필드 초기화
@@ -65,7 +68,7 @@ class Mammamia(App):
     def send_entry_message(self):
         log_widget = self.query_one(RichLog)
         entry_message = {
-        'sender': '정미은',
+        'sender': '김예지',
         'message':'채팅방에 입장하셨습니다.',
         'time': datetime.today().strftime("%Y-%m-%d %H:%M:%S")}
     
@@ -80,7 +83,7 @@ class Mammamia(App):
     def send_exit_message(self):
         log_widget = self.query_one(RichLog)
         exit_message = {
-        'sender': '정미은',
+        'sender': '김예지',
         'message':'채팅방을 퇴장했습니다.',
         'time': datetime.today().strftime("%Y-%m-%d %H:%M:%S")}
 
@@ -107,7 +110,7 @@ class Mammamia(App):
                 sender = data['sender']
                 message = data['message']
                 received_time = data['time']
-                if sender != '정미은': # 내가 보낸건 보고싶지않아요
+                if sender != '김예지': # 내가 보낸건 보고싶지않아요
                     self.post_message_to_log(sender, message, received_time)
         except KeyboardInterrupt:
             print("채팅 종료")
@@ -119,9 +122,9 @@ class Mammamia(App):
         if "퇴장했습니다" in message:
             text_con = Text(f"{sender}님이 {message} (받은 시간 : {received_time})", style="bold red", justify="right")
         elif "입장하셨습니다" in message:
-            text_con = Text(f"{sender}님이 {message} (받은 시간 : {received_time})", style="bold green", justify="right")    
+            text_con = Text(f"{sender}님이 {message} (받은 시간 : {received_time})", style="#8cd16a", justify="right")    
         else:
-            text_con = Text(f"{sender} : {message} (받은 시간 : {received_time})", style="bold white", justify="right")
+            text_con = Text(f"{sender} : {message} (받은 시간 : {received_time})", style="bold gray", justify="right")
         # 여기에서 consumer 값 출력
         #if message == 'exit':
         #    self.send_exit_message()
