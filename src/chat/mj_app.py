@@ -29,6 +29,10 @@ class Mammamia(App):
         self.sub_title = "TEAM mammamia"
         self.screen.styles.background = "darkgrey"
         self.screen.styles.border = ("heavy", "black")
+
+        # 채팅방 입장 메시지 자동으로 출력 및 전송
+        self.send_entry_message()
+
     ################ 메세지 관련 ##################
     @on(Input.Submitted) # 채팅 치면 발생하는 event
     def on_input_submitted(self, event: Input.Submitted): # producer
@@ -58,6 +62,21 @@ class Mammamia(App):
         
         # 입력 필드 초기화
         input_widget.value = ""
+
+    def send_entry_message(self):
+        log_widget = self.query_one(RichLog)
+        entry_message = {
+        'sender': '박민주',
+        'message':'채팅방에 입장하셨습니다.',
+        'time': datetime.today().strftime("%Y-%m-%d %H:%M:%S")}
+    
+    # producer가 입장 메시지를 보냄
+        self.producer.send('mammamia10', value=entry_message)
+        self.producer.flush()
+    
+    # 입장 메시지를 로그에 추가
+        entry_text = Text(f"{entry_message['sender']}님이 {entry_message['message']} (보낸 시간: {entry_message['time']})", style="bold green", justify="right")
+        log_widget.write(entry_text)
 
     def send_exit_message(self):
         log_widget = self.query_one(RichLog)
@@ -99,15 +118,13 @@ class Mammamia(App):
     def post_message_to_log(self, sender, message, received_time):
         log_widget = self.query_one(RichLog)
         # 여기에서 consumer 값 출력
-        if message == 'exit':
-            self.send_exit_message()
-        else:
-            text_con = Text(f"{sender} : {message} (받은 시간 : {received_time})",
-                style="bold white", justify="right") # 받는 채팅은 우측으로
+        #if message == 'exit':
+        #    self.send_exit_message()
+        #else:
+        text_con = Text(f"{sender} : {message} (받은 시간 : {received_time})", style="bold white", justify="right") # 받는 채팅은 우측으로
         #log_widget.write(f"{sender} : {message} (받은 시간 : {received_time})")
         log_widget.write(text_con)
 
 if __name__ == "__main__":
     app = Mammamia()
     app.run()
-
