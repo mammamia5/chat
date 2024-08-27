@@ -47,7 +47,7 @@ class Mammamia(App):
             self.exit()
             return #return으로 함수를 끝내야 exit이 중복으로 나오지 않음
         data = {
-            'sender': '박민주',  # 사용자 이름을 입력하고 시작하는 식으로 고칠까
+            'sender': '정미은',  # 사용자 이름을 입력하고 시작하는 식으로 고칠까
             'message': message,
             'time': datetime.today().strftime("%Y-%m-%d %H:%M:%S")
         }
@@ -66,7 +66,7 @@ class Mammamia(App):
     def send_entry_message(self):
         log_widget = self.query_one(RichLog)
         entry_message = {
-        'sender': '박민주',
+        'sender': '정미은',
         'message':'채팅방에 입장하셨습니다.',
         'time': datetime.today().strftime("%Y-%m-%d %H:%M:%S")}
     
@@ -81,7 +81,7 @@ class Mammamia(App):
     def send_exit_message(self):
         log_widget = self.query_one(RichLog)
         exit_message = {
-        'sender': '박민주',
+        'sender': '정미은',
         'message':'채팅방을 퇴장했습니다.',
         'time': datetime.today().strftime("%Y-%m-%d %H:%M:%S")}
 
