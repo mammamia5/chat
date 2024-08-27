@@ -64,7 +64,7 @@ class Mammamia(App):
         log_widget = self.query_one(RichLog)
         exit_message = {
         'sender': '박민주',
-        'message': f"박민주님이 채팅방을 퇴장했습니다.",
+        'message': 'exit',
         'time': datetime.today().strftime("%Y-%m-%d %H:%M:%S")}
 
     # producer가 퇴장 메시지를 보냄
@@ -72,12 +72,12 @@ class Mammamia(App):
         self.producer.flush()
 
     # 퇴장 메시지를 로그에 추가
-        exit_text = Text(f"{exit_message['message']} (보낸 시간: {exit_message['time']})", style="bold red")
+        exit_text = Text(f"{exit_message['sender']}님이 채팅방을 퇴장했습니다. (보낸 시간: {exit_message['time']})", style="bold red")
         log_widget.write(exit_text)
 
     def consume_messages(self): # consumer
         consumer = KafkaConsumer(
-            'mammamia3',
+                'mammamia3',
             bootstrap_servers=["ec2-43-203-210-250.ap-northeast-2.compute.amazonaws.com:9092"],
             auto_offset_reset="earliest",
             #enable_auto_commit=True,
@@ -91,34 +91,19 @@ class Mammamia(App):
                 message = data['message']
                 received_time = data['time']
                 if sender != '박민주': # 내가 보낸건 보고싶지않아요
-                    # 일반 메시지인지 퇴장 메시지인지 확인
-                    if "exit" in message:
-                        # 퇴장 메시지 출력 (: 없이 출력)
-                        self.post_message_to_log(sender, message, received_time, is_exit=True)
-                    else:
-                        # 일반 메시지 출력
-                        self.post_message_to_log(sender, message, received_time)
+                    self.post_message_to_log(sender, message, received_time)
         except KeyboardInterrupt:
             print("채팅 종료")
         finally:
             consumer.close()
 
-    def post_message_to_log(self, sender, message, received_time, is_exit=False):
+    def post_message_to_log(self, sender, message, received_time):
         log_widget = self.query_one(RichLog)
         # 여기에서 consumer 값 출력
-        
-        # 퇴장 메시지일 경우 : 없이 출력
-        if is_exit:
-            text_con = Text(f"{message} (받은 시간: {received_time})", style="bold red", justify="right")
-        else:
-            text_con = Text(f"{sender} : {message} (받은 시간: {received_time})", style="bold blue", justify="right")
-        
-        #text_con = Text(f"{sender} : {message} (받은 시간 : {received_time})",style="bold white", justify="right") # 받는 채팅은 우측으로
+        text_con = Text(f"{sender} : {message} (받은 시간 : {received_time})", style="bold white", justify="right") # 받는 채팅은 우측으로
         #log_widget.write(f"{sender} : {message} (받은 시간 : {received_time})")
-        
         log_widget.write(text_con)
 
 if __name__ == "__main__":
     app = Mammamia()
     app.run()
-
