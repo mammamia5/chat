@@ -53,8 +53,7 @@ class Mammamia(App):
         # 메시지를 로그에 추가
         # 여기에서 producer 출력
         text_prod = Text(f"{data['sender']}: {message} (보낸 시간: {data['time']})",
-                style="bold green") # 입력 들어오는거 꾸미기
-        #log_widget.write(f"{data['sender']}: {message} (보낸 시간: {data['time']})")
+                style="bold blue") # 입력 들어오는거 꾸미기
         log_widget.write(text_prod)
         
         # 입력 필드 초기화
@@ -64,7 +63,6 @@ class Mammamia(App):
         log_widget = self.query_one(RichLog)
         exit_message = {
         'sender': '정미은',
-        'message': f"채팅방을 퇴장했습니다.",
         'time': datetime.today().strftime("%Y-%m-%d %H:%M:%S")}
 
     # producer가 퇴장 메시지를 보냄
@@ -72,10 +70,9 @@ class Mammamia(App):
         self.producer.flush()
 
     # 퇴장 메시지를 로그에 추가
-        exit_text = Text(f"{exit_message['sender']}님이 채팅방을 퇴장했습니다. (보>낸 시간: {exit_message['time']})",
-                     style="bold red")
+        exit_text = Text(f"{exit_message['sender']}님이 채팅방을 퇴장했습니다. (보낸 시간: {exit_message['time']})", style="bold red", justify="right")
         log_widget.write(exit_text)
-
+        
     def consume_messages(self): # consumer
         consumer = KafkaConsumer(
             'mammamia7',
@@ -101,7 +98,10 @@ class Mammamia(App):
     def post_message_to_log(self, sender, message, received_time):
         log_widget = self.query_one(RichLog)
         # 여기에서 consumer 값 출력
-        text_con = Text(f"{sender} : {message} (받은 시간 : {received_time})",
+        if message == 'exit':
+            self.send_exit_message()
+        else:
+            text_con = Text(f"{sender} : {message} (받은 시간 : {received_time})",
                 style="bold white", justify="right") # 받는 채팅은 우측으로
         #log_widget.write(f"{sender} : {message} (받은 시간 : {received_time})")
         log_widget.write(text_con)
