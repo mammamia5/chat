@@ -64,7 +64,7 @@ class Mammamia(App):
         log_widget = self.query_one(RichLog)
         exit_message = {
         'sender': '김원준',
-        'message': f"채팅방을 퇴장했습니다.",
+        'message': 'exit',
         'time': datetime.today().strftime("%Y-%m-%d %H:%M:%S")}
 
     # producer가 퇴장 메시지를 보냄
