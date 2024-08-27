@@ -40,7 +40,7 @@ class ChatApp(App):
             df.to_csv('~/data/team_chat.csv', index = False)
             self.exit()
         data = {
-            'sender': '김원준',  # 사용자 이름을 입력하고 시작하는 식으로 고칠까
+            'sender': '박민주',  # 사용자 이름을 입력하고 시작하는 식으로 고칠까
             'message': message,
             'time': datetime.today().strftime("%H:%M")
         }
@@ -75,7 +75,7 @@ class ChatApp(App):
                 sender = data['sender']
                 message = data['message']
                 received_time = data['time']
-                if sender != '김원준': # 내가 보낸건 보고싶지않아요
+                if sender != '박민주': # 내가 보낸건 보고싶지않아요
                     self.post_message_to_log(sender, message, received_time)
         except KeyboardInterrupt:
             print("채팅 종료")
