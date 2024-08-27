@@ -27,7 +27,8 @@ class Mammamia(App):
     def on_mount(self) -> None:
         self.title = "KAFKA CHATTING PROGRAM"
         self.sub_title = "TEAM mammamia"
-    
+        self.screen.styles.background = "darkgrey"
+        self.screen.styles.border = ("heavy", "black")
     ################ 메세지 관련 ##################
     @on(Input.Submitted) # 채팅 치면 발생하는 event
     def on_input_submitted(self, event: Input.Submitted): # producer
@@ -100,7 +101,7 @@ class Mammamia(App):
         log_widget = self.query_one(RichLog)
         # 여기에서 consumer 값 출력
         text_con = Text(f"{sender} : {message} (받은 시간 : {received_time})",
-                style="bold yellow", justify="right") # 받는 채팅은 우측으로
+                style="bold white", justify="right") # 받는 채팅은 우측으로
         #log_widget.write(f"{sender} : {message} (받은 시간 : {received_time})")
         log_widget.write(text_con)
 
