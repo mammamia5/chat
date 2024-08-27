@@ -47,7 +47,7 @@ class Mammamia(App):
             self.exit()
             return #return으로 함수를 끝내야 exit이 중복으로 나오지 않음
         data = {
-            'sender': '박민주',  # 사용자 이름을 입력하고 시작하는 식으로 고칠까
+            'sender': '김원준',  # 사용자 이름을 입력하고 시작하는 식으로 고칠까
             'message': message,
             'time': datetime.today().strftime("%Y-%m-%d %H:%M:%S")
         }
@@ -66,7 +66,7 @@ class Mammamia(App):
     def send_entry_message(self):
         log_widget = self.query_one(RichLog)
         entry_message = {
-        'sender': '박민주',
+        'sender': '김원준',
         'message':'채팅방에 입장하셨습니다.',
         'time': datetime.today().strftime("%Y-%m-%d %H:%M:%S")}
     
@@ -81,7 +81,7 @@ class Mammamia(App):
     def send_exit_message(self):
         log_widget = self.query_one(RichLog)
         exit_message = {
-        'sender': '박민주',
+        'sender': '김원준',
         'message':'채팅방을 퇴장했습니다.',
         'time': datetime.today().strftime("%Y-%m-%d %H:%M:%S")}
 
@@ -108,7 +108,7 @@ class Mammamia(App):
                 sender = data['sender']
                 message = data['message']
                 received_time = data['time']
-                if sender != '박민주': # 내가 보낸건 보고싶지않아요
+                if sender != '김원준': # 내가 보낸건 보고싶지않아요
                     self.post_message_to_log(sender, message, received_time)
         except KeyboardInterrupt:
             print("채팅 종료")
@@ -121,7 +121,7 @@ class Mammamia(App):
         #if message == 'exit':
         #    self.send_exit_message()
         #else:
-        text_con = Text(f"{sender} : {message} (받은 시간 : {received_time})", style="bold white", justify="right") # 받는 채팅은 우측으로
+        text_con = Text(f"{sender} : {message} (받은 시간 : {received_time})", style="#cbea66", justify="right") # 받는 채팅은 우측으로
         #log_widget.write(f"{sender} : {message} (받은 시간 : {received_time})")
         log_widget.write(text_con)
 
