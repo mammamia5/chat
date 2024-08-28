@@ -54,10 +54,13 @@ $ python src/chat/name.py
 ![image](https://github.com/user-attachments/assets/f60899e7-ac7f-4ad2-8c3c-5ed1a4cf892a)
 
 ### 결과 - 채팅 감사
+
 **사용률이 높은 단어**
+
 ![image](https://github.com/user-attachments/assets/57d0d7b8-343f-463c-b00f-219cb4142175)
 
 **사용률이 높은 표현**
+
 +-------------+-----+
 |         word|count|
 +-------------+-----+
@@ -74,6 +77,7 @@ $ python src/chat/name.py
 +-------------+-----+
 
 **이용율이 높은 시간대**
+
 +-----+------+------+-----+----+----+----+----+----+
 |9to10|10to11|11to12|12to1|1to2|2to3|3to4|4to5|5to6|
 +-----+------+------+-----+----+----+----+----+----+
@@ -81,6 +85,7 @@ $ python src/chat/name.py
 +-----+------+------+-----+----+----+----+----+----+
 
 **최다 채팅 유저**
+
 +------+----------+
 |sender|count_user|
 +------+----------+
@@ -92,6 +97,7 @@ $ python src/chat/name.py
 +------+----------+
 
 ### 수정 - 영화검색 결과 예쁘게 꾸미기
+
 ![image](https://github.com/user-attachments/assets/217866b7-8eff-4e08-a684-18ca1e7de081)
 
 
