@@ -1,0 +1,15 @@
+README.md
+pyproject.toml
+src/chat/__init__.py
+src/chat/app.py
+src/chat/app2.py
+src/chat/mj_app.py
+src/chat/movie_search.py
+src/chat/search.py
+src/chat/test_app.py
+src/chat/word_stats.py
+src/chat.egg-info/PKG-INFO
+src/chat.egg-info/SOURCES.txt
+src/chat.egg-info/dependency_links.txt
+src/chat.egg-info/requires.txt
+src/chat.egg-info/top_level.txt

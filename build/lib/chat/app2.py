@@ -6,7 +6,8 @@ from kafka import KafkaProducer, KafkaConsumer
 from json import dumps, loads
 from datetime import datetime
 import threading
-from textual.widgets import Header, Footer, Input
+import pandas as pd
+
 class ChatApp(App):
     def __init__(self):
         super().__init__()
@@ -14,12 +15,13 @@ class ChatApp(App):
         self.producer = KafkaProducer(
             # ip는 이따가 서버 열리면 바꾸기
             bootstrap_servers=['ec2-43-203-210-250.ap-northeast-2.compute.amazonaws.com:9092'],
+            #bootstrap_servers=['172.17.0.1:9092'],
             value_serializer=lambda x: dumps(x).encode('utf-8')
         )
         self.consumer_thread = threading.Thread(target=self.consume_messages, daemon=True)
         self.consumer_thread.start()
 
-    ############ UI 구성하는곳 #############
+    ############ 시작 UI 구성하는곳 #############
     def compose(self) -> ComposeResult:
         # 사용자 이름 입력을 위한 초기 화면
         yield Static("사용자 이름을 입력하세요:", id="user_name_prompt")
@@ -72,19 +74,25 @@ class ChatApp(App):
         consumer = KafkaConsumer(
             'mammamia',
             bootstrap_servers=["ec2-43-203-210-250.ap-northeast-2.compute.amazonaws.com:9092"],
+            #bootstrap_servers=["172.17.0.1:9092"],
             auto_offset_reset="earliest",
-            #enable_auto_commit=True,
-            #group_id='chat_group',
+#            enable_auto_commit=True,
+#            group_id='chat_group',
             value_deserializer=lambda x: loads(x.decode('utf-8'))
         )
         try:
+            log_widget = self.query_one("#chat_log", RichLog)
             for msg in consumer:
                 data = msg.value
                 sender = data['sender']
                 message = data['message']
                 received_time = data['time']
-                if sender != self.user_name:  # 내가 보낸건 보고싶지 않아요
-                    self.post_message_to_log(sender, message, received_time)
+                # 여기에서 consumer 값 출력
+#                text_con = Text(f"{sender} : {message} (받은 시간 : {received_time})",
+#                        style="bold blue", justify="right")  # 받는 채팅은 우측으로
+#                log_widget.write(text_con)
+                #if sender != self.user_name:  # 내가 보낸건 보고싶지 않아요
+                self.post_message_to_log(sender, message, received_time)
         except KeyboardInterrupt:
             print("채팅 종료")
         finally:
