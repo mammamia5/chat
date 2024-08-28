@@ -8,6 +8,7 @@ from datetime import datetime
 import threading
 from textual.widgets import Header, Footer, Input
 from rich.console import Console
+from chat.movie_search import read_data
 
 class Mammamia(App):
     def __init__(self):
@@ -66,6 +67,25 @@ class Mammamia(App):
             else:
                 log_widget.write(Text("검색어를 입력하세요.", style="bold red"))
             input_widget.value = ""  # 입력 필드 초기화
+            return
+        elif message.startswith('@영화검색'):
+            keyword = message.split(' ', 1)[1] if ' ' in message else None
+            if keyword:
+                df = read_data(keyword)
+                data = {
+                    'sender': '김원준',  # 사용자 이름을 입력하고 시작하는 식으로 고칠까
+                    'message': df,
+                    'time': datetime.today().strftime("%Y-%m-%d %H:%M:%S")}
+                self.producer.send('mammamia10', value=data)
+                self.producer.flush()
+
+                # 메시지를 로그에 추가
+                # 여기에서 producer 출력
+                text_prod = Text(f"{data['sender']}: {message} (보낸 시간: {data['time']})", style="#000000") # 입력 들어오는거 꾸미기
+                log_widget.write(text_prod)
+            else:
+                log_widget.write(Text("검색어를 입력하세요.", style="bold red"))
+            input_widget.value = ""
             return
         
         input_widget.value = ""  # 입력 필드 초기화
