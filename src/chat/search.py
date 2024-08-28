@@ -8,6 +8,7 @@ from datetime import datetime
 import threading
 from textual.widgets import Header, Footer, Input
 from rich.console import Console
+from chat.word_stats import main
 
 class Mammamia(App):
     def __init__(self):
@@ -34,6 +35,7 @@ class Mammamia(App):
         yield Input(placeholder="메시지를 입력하세요...") # 채팅창 입력칸
         
     def on_mount(self) -> None:
+        from chat.word_stats import main
         self.title = "KAFKA CHATTING PROGRAM"
         self.sub_title = "TEAM mammamia"
         self.screen.styles.background = "white"
@@ -72,7 +74,7 @@ class Mammamia(App):
         
         # 일반 메시지 처리
         data = {
-            'sender': '박민주',  # 사용자 이름을 입력하고 시작하는 식으로 고칠까
+            'sender': '김맹지',  # 사용자 이름을 입력하고 시작하는 식으로 고칠까
             'message': message,
             'time': datetime.today().strftime("%Y-%m-%d %H:%M:%S")}
         self.producer.send('mammamia10', value=data)
@@ -108,7 +110,7 @@ class Mammamia(App):
     def send_entry_message(self):
         log_widget = self.query_one(RichLog)
         entry_message = {
-        'sender': '박민주',
+        'sender': '김맹지',
         'message':'채팅방에 입장하셨습니다.',
         'time': datetime.today().strftime("%Y-%m-%d %H:%M:%S")}
     
@@ -123,7 +125,7 @@ class Mammamia(App):
     def send_exit_message(self):
         log_widget = self.query_one(RichLog)
         exit_message = {
-        'sender': '박민주',
+        'sender': '김맹지',
         'message':'채팅방을 퇴장했습니다.',
         'time': datetime.today().strftime("%Y-%m-%d %H:%M:%S")}
 
@@ -153,7 +155,7 @@ class Mammamia(App):
 
                 self.messages.append(data)
 
-                if sender != '박민주': # 내가 보낸건 보고싶지않아요
+                if sender != '김맹지': # 내가 보낸건 보고싶지않아요
                     self.post_message_to_log(sender, message, received_time)
         except KeyboardInterrupt:
             print("채팅 종료")
