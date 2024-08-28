@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: chat
-Version: 0.20
+Version: 0.3.0
 Summary: Default template for PDM package
 Author-email: kimpass189 <kimpass189@gmail.com>
 License: MIT
@@ -9,6 +9,8 @@ Description-Content-Type: text/markdown
 Requires-Dist: kafka-python>=2.0.2
 Requires-Dist: textual>=0.73.0
 Requires-Dist: requests>=2.32.3
+Requires-Dist: pandas>=2.0.3
+Requires-Dist: pyarrow>=17.0.0
 
 # chat
 일단 채팅은 원활하게 돌아가는데

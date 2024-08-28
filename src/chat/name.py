@@ -33,7 +33,7 @@ class Mammamia(App):
         rich_log = RichLog(id="chat_log")
         rich_log.styles.display = "none"
 
-        rich_log.styles.background = '#fcecd9'
+        rich_log.styles.background = '#F5EEDC'
         yield rich_log
         message_input = Input(placeholder="메시지를 입력하세요...", id="message_input", disabled=True)
         message_input.styles.display = "none"  # 초기에는 숨겨진 메시지 입력 필드
@@ -42,8 +42,8 @@ class Mammamia(App):
     def on_mount(self) -> None:
         self.title = "KAFKA CHATTING PROGRAM"
         self.sub_title = "TEAM mammamia"
-        self.screen.styles.background = "#fee6c2"
-        self.screen.styles.border = ("heavy", "black")
+        self.screen.styles.background = "#F5EEDC"
+        self.screen.styles.border = ("heavy", "#DD4A48")
         #self.chatroom.styles.background = "#f9f9f9"
         #self.chatroom.styles.text_color = "black"
 
@@ -225,11 +225,11 @@ class Mammamia(App):
     def post_message_to_log(self, sender, message, received_time):
         log_widget = self.query_one(RichLog)
         if "퇴장했습니다" in message:
-            text_con = Text(f"{sender}님이 {message} (받은 시간 : {received_time})", style="#e5e5e5", justify="right")
+            text_con = Text(f"{sender}님이 {message} (받은 시간 : {received_time})", style="#ce5353", justify="right")
         elif "입장하셨습니다" in message:
             text_con = Text(f"{sender}님이 {message} (받은 시간 : {received_time})", style="#fca311", justify="right")    
         else:
-            text_con = Text(f"{sender} : {message} (받은 시간 : {received_time})", style="bold #fd01d3", justify="right")
+            text_con = Text(f"{sender} : {message} (받은 시간 : {received_time})", style="bold #041c33", justify="right")
         # 여기에서 consumer 값 출력
         #if message == 'exit':
         #    self.send_exit_message()
