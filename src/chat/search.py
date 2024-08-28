@@ -7,6 +7,7 @@ from json import dumps, loads
 from datetime import datetime
 import threading
 from textual.widgets import Header, Footer, Input
+from rich.console import Console
 
 class Mammamia(App):
     def __init__(self):
@@ -17,6 +18,11 @@ class Mammamia(App):
         )
         self.consumer_thread = threading.Thread(target=self.consume_messages, daemon=True)
         self.consumer_thread.start()
+        
+        # 메시지 로그를 저장할 리스트 (초기화)
+        self.messages = []
+        self.console = Console()
+
     ############ UI 구성하는곳 #############
     def compose(self) -> ComposeResult:
         # TODO : 시작할때 본인 이름을 치는걸 구현하고 싶어요
@@ -52,6 +58,19 @@ class Mammamia(App):
             self.exit()
             return #return으로 함수를 끝내야 exit이 중복으로 나오지 않음
         
+        # 검색 명령어 처리: @검색 키워드
+        if message.startswith('@검색'):
+            keyword = message.split(' ', 1)[1] if ' ' in message else None
+            if keyword:
+                self.search_messages(keyword)
+            else:
+                log_widget.write(Text("검색어를 입력하세요.", style="bold red"))
+            input_widget.value = ""  # 입력 필드 초기화
+            return
+        
+        input_widget.value = ""  # 입력 필드 초기화
+        
+        # 일반 메시지 처리
         data = {
             'sender': '박민주',  # 사용자 이름을 입력하고 시작하는 식으로 고칠까
             'message': message,
@@ -64,8 +83,27 @@ class Mammamia(App):
         text_prod = Text(f"{data['sender']}: {message} (보낸 시간: {data['time']})", style="#000000") # 입력 들어오는거 꾸미기
         log_widget.write(text_prod)
         
-        # 입력 필드 초기화
-        input_widget.value = ""
+
+    def search_messages(self, keyword):
+        log_widget = self.query_one(RichLog)
+        # 검색 결과 로그에 출력
+        log_widget.write(Text(f"'{keyword}'에 대한 검색 결과:", style="bold green"))
+
+        # 검색할 메시지가 저장된 로그를 순회 (간단한 예로 self.messages 리스트 사용)
+        search_results = [f"{msg['sender']} : {msg['message']} (보낸 시간 : {msg['time']})"
+                      for msg in self.messages if keyword in msg['message']]
+
+        if search_results:
+            for result in search_results:
+                log_widget.write(Text(result, style="bold yellow"))
+        else:
+            log_widget.write(Text("검색 결과가 없습니다.", style="bold red"))
+
+    def send_exit_message(self):
+        log_widget = self.query_one(RichLog)
+        log_widget.write(Text("채팅을 종료합니다.", style="bold red"))
+
+
 
     def send_entry_message(self):
         log_widget = self.query_one(RichLog)
@@ -112,6 +150,9 @@ class Mammamia(App):
                 sender = data['sender']
                 message = data['message']
                 received_time = data['time']
+
+                self.messages.append(data)
+
                 if sender != '박민주': # 내가 보낸건 보고싶지않아요
                     self.post_message_to_log(sender, message, received_time)
         except KeyboardInterrupt:
