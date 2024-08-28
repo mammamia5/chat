@@ -33,7 +33,7 @@ class Mammamia(App):
         rich_log = RichLog(id="chat_log")
         rich_log.styles.display = "none"
 
-        rich_log.styles.background = '#ffffff'
+        rich_log.styles.background = '#545454'
         yield rich_log
         message_input = Input(placeholder="메시지를 입력하세요...", id="message_input", disabled=True)
         message_input.styles.display = "none"  # 초기에는 숨겨진 메시지 입력 필드
@@ -42,8 +42,8 @@ class Mammamia(App):
     def on_mount(self) -> None:
         self.title = "KAFKA CHATTING PROGRAM"
         self.sub_title = "TEAM mammamia"
-        self.screen.styles.background = "white"
-        self.screen.styles.border = ("heavy", "lightgrey")
+        self.screen.styles.background = "#545454"
+        self.screen.styles.border = ("heavy", "black")
         #self.chatroom.styles.background = "#f9f9f9"
         #self.chatroom.styles.text_color = "black"
 
@@ -62,7 +62,7 @@ class Mammamia(App):
             self.user_name = event.value.strip()  # 입력된 이름을 저장
             if self.user_name:
                 # 환영 메시지를 출력하고 메시지 입력 필드로 전환
-                log_widget.write(Text(f"환영합니다, {self.user_name}님! 이제 채팅을 시작할 수 있습니다.", style="bold green"))
+                log_widget.write(Text(f"환영합니다, {self.user_name}님! 이제 채팅을 시작할 수 있습니다.", style="#e4394a"))
                 input_widget.styles.display = "none"  # 이름 입력 필드를 숨김
                 log_widget.styles.display = "block"  # 채팅 로그를 표시
                 message_input = self.query_one("#message_input")
@@ -73,7 +73,7 @@ class Mammamia(App):
                 # 이름 입력 후 입장 메시지 전송
                 self.send_entry_message()
             else:
-                log_widget.write(Text("이름을 입력하세요.", style="bold red"))
+                log_widget.write(Text("이름을 입력하세요.", style="white"))
             
             input_widget.value = ""
             return
@@ -103,7 +103,7 @@ class Mammamia(App):
             if keyword:
                 self.search_messages(keyword)
             else:
-                log_widget.write(Text("검색어를 입력하세요.", style="bold red"))
+                log_widget.write(Text("검색어를 입력하세요.", style="white"))
             input_widget.value = ""  # 입력 필드 초기화
             return
         elif message.startswith('@영화검색'):
@@ -119,10 +119,10 @@ class Mammamia(App):
 
                 # 메시지를 로그에 추가
                 # 여기에서 producer 출력
-                text_prod = Text(f"{data['sender']}: {message} (보낸 시간: {data['time']})", style="#000000") # 입력 들>어오는거 꾸미기
+                text_prod = Text(f"{data['sender']}: {message} (보낸 시간: {data['time']})", style="#ffffff") # 입력 들>어오는거 꾸미기
                 log_widget.write(text_prod)
             else:
-                log_widget.write(Text("검색어를 입력하세요.", style="bold red"))
+                log_widget.write(Text("검색어를 입력하세요.", style="white"))
             input_widget.value = ""
             return        
         #input_widget.value = ""  # 입력 필드 초기화
@@ -138,7 +138,7 @@ class Mammamia(App):
         
         # 메시지를 로그에 추가
         # 여기에서 producer 출력
-        text_prod = Text(f"{data['sender']}: {message} (보낸 시간: {data['time']})", style="#000000") # 입력 들어오는거 꾸미기
+        text_prod = Text(f"{data['sender']}: {message} (보낸 시간: {data['time']})", style="white") # 입력 들어오는거 꾸미기
         log_widget.write(text_prod)
         
         input_widget.value = ""  # 입력 필드 초기화
@@ -146,7 +146,7 @@ class Mammamia(App):
     def search_messages(self, keyword):
         log_widget = self.query_one(RichLog)
         # 검색 결과 로그에 출력
-        log_widget.write(Text(f"'{keyword}'에 대한 검색 결과:", style="bold green"))
+        log_widget.write(Text(f"'{keyword}'에 대한 검색 결과:", style="#fdf449"))
 
         # 검색할 메시지가 저장된 로그를 순회 (간단한 예로 self.messages 리스트 사용)
         search_results = [f"{msg['sender']} : {msg['message']} (보낸 시간 : {msg['time']})"
@@ -154,13 +154,13 @@ class Mammamia(App):
 
         if search_results:
             for result in search_results:
-                log_widget.write(Text(result, style="bold yellow"))
+                log_widget.write(Text(result, style="#ffffff"))
         else:
-            log_widget.write(Text("검색 결과가 없습니다.", style="bold red"))
+            log_widget.write(Text("검색 결과가 없습니다.", style="#fdf449"))
 
     def send_exit_message(self):
         log_widget = self.query_one(RichLog)
-        log_widget.write(Text("채팅을 종료합니다.", style="bold red"))
+        log_widget.write(Text("채팅을 종료합니다.", style="#e4394a"))
 
 
 
@@ -179,7 +179,7 @@ class Mammamia(App):
         self.producer.flush()
     
     # 입장 메시지를 로그에 추가
-        entry_text = Text(f"{entry_message['sender']}님이 {entry_message['message']} (보낸 시간: {entry_message['time']})", style="#fca311", justify="right")
+        entry_text = Text(f"{entry_message['sender']}님이 {entry_message['message']} (보낸 시간: {entry_message['time']})", style="#0048c6", justify="right")
         log_widget.write(entry_text)
 
     def send_exit_message(self):
@@ -194,7 +194,7 @@ class Mammamia(App):
         self.producer.flush()
 
     # 퇴장 메시지를 로그에 추가
-        exit_text = Text(f"{exit_message['sender']}님이 {exit_message['message']} (보낸 시간: {exit_message['time']})", style="#e5e5e5", justify="right")
+        exit_text = Text(f"{exit_message['sender']}님이 {exit_message['message']} (보낸 시간: {exit_message['time']})", style="#0048c6", justify="right")
         log_widget.write(exit_text)
         
     def consume_messages(self): # consumer
@@ -225,11 +225,11 @@ class Mammamia(App):
     def post_message_to_log(self, sender, message, received_time):
         log_widget = self.query_one(RichLog)
         if "퇴장했습니다" in message:
-            text_con = Text(f"{sender}님이 {message} (받은 시간 : {received_time})", style="#e5e5e5", justify="right")
+            text_con = Text(f"{sender}님이 {message} (받은 시간 : {received_time})", style="#0269c9", justify="right")
         elif "입장하셨습니다" in message:
-            text_con = Text(f"{sender}님이 {message} (받은 시간 : {received_time})", style="#fca311", justify="right")    
+            text_con = Text(f"{sender}님이 {message} (받은 시간 : {received_time})", style="#0269c9", justify="right")    
         else:
-            text_con = Text(f"{sender} : {message} (받은 시간 : {received_time})", style="#14213d", justify="right")
+            text_con = Text(f"{sender} : {message} (받은 시간 : {received_time})", style="#ffffff", justify="right")
         # 여기에서 consumer 값 출력
         #if message == 'exit':
         #    self.send_exit_message()
