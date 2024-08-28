@@ -42,9 +42,11 @@ $ python src/chat/name.py
 
 ### 구조
 **dags**
+
 ![image](https://github.com/user-attachments/assets/9e83751e-7750-4ff0-96b2-fdc2a7532e40)
 
 **chat**
+
 ![image](https://github.com/user-attachments/assets/a1ff8b06-730a-4c82-b0b4-da94a79a2e31)
 
 ### 결과
