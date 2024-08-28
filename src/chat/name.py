@@ -9,7 +9,9 @@ import threading
 from textual.widgets import Header, Footer, Input
 from rich.console import Console
 from textual.containers import Container
+from pprint import pformat
 from chat.movie_search import read_data
+
 
 class Mammamia(App):
     def __init__(self):
@@ -162,8 +164,6 @@ class Mammamia(App):
         log_widget = self.query_one(RichLog)
         log_widget.write(Text("채팅을 종료합니다.", style="bold red"))
 
-
-
     def send_entry_message(self):
         if not self.user_name:  # user_name이 None이거나 비어 있으면 메시지를 전송하지 않음
             return
@@ -227,7 +227,10 @@ class Mammamia(App):
         if "퇴장했습니다" in message:
             text_con = Text(f"{sender}님이 {message} (받은 시간 : {received_time})", style="#e5e5e5", justify="right")
         elif "입장하셨습니다" in message:
-            text_con = Text(f"{sender}님이 {message} (받은 시간 : {received_time})", style="#fca311", justify="right")    
+            text_con = Text(f"{sender}님이 {message} (받은 시간 : {received_time})", style="#fca311", justify="right")
+        elif type(message) == list:
+            pmessage = pformat(message)
+            text_con = Text(f"{sender} : {pmessage} (받은 시간 : {received_time})", style="bold #784aec")
         else:
             text_con = Text(f"{sender} : {message} (받은 시간 : {received_time})", style="bold #fd01d3", justify="right")
         # 여기에서 consumer 값 출력
