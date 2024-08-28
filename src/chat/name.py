@@ -111,7 +111,7 @@ class Mammamia(App):
             if keyword:
                 df = read_data(keyword)
                 data = {
-                    'sender': '김원준',  # 사용자 이름을 입력하고 시작하는 식으로 고칠까
+                    'sender': self.user_name,  # 사용자 이름을 입력하고 시작하는 식으로 고칠까
                     'message': df,
                     'time': datetime.today().strftime("%Y-%m-%d %H:%M:%S")}
                 self.producer.send('mammamia10', value=data)
@@ -214,7 +214,7 @@ class Mammamia(App):
                 received_time = data['time']
 
                 self.messages.append(data)
-
+                
                 if sender != self.user_name: # 내가 보낸건 보고싶지않아요
                     self.post_message_to_log(sender, message, received_time)
         except KeyboardInterrupt:
