@@ -100,6 +100,8 @@ $ python src/chat/name.py
 
 ![image](https://github.com/user-attachments/assets/217866b7-8eff-4e08-a684-18ca1e7de081)
 
+### related git
+https://github.com/mammamia5/airflow
 
 
 
